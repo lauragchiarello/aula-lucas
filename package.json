@@ -12,7 +12,9 @@
     "expo": "55.0.10-canary-20260327-0789fbc",
     "expo-status-bar": "55.0.5-canary-20260327-0789fbc",
     "react": "19.2.0",
-    "react-native": "0.83.4"
+    "react-native": "0.83.4",
+    "react-native-maps":"1.14.0",
+    "expo-location":"~17.0.1"
   },
   "private": true
 }
