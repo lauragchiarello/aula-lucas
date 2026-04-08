@@ -1,31 +1,15 @@
 /**
- * storage.js — Camada de acesso ao localStorage
+ * storage.js — Camada de acesso aos dados (agora usando IndexedDB)
  *
  * Centraliza todas as operações de leitura e escrita de dados,
  * separando a responsabilidade de persistência da lógica de UI.
+ * Agora usa IndexedDB para melhor performance e capacidades.
  */
 
 var Storage = (function () {
   "use strict";
 
-  var KEY_SERVICOS      = "barbearia_servicos";
-  var KEY_AGENDAMENTOS  = "barbearia_agendamentos";
-
-  // ——— Utilitários internos ———
-
-  function carregar(chave, padrao) {
-    try {
-      var raw = localStorage.getItem(chave);
-      if (!raw) return padrao;
-      return JSON.parse(raw);
-    } catch (e) {
-      return padrao;
-    }
-  }
-
-  function salvar(chave, dados) {
-    localStorage.setItem(chave, JSON.stringify(dados));
-  }
+  // ——— Utilitários ———
 
   /** Gera um identificador único simples. */
   function uid() {
@@ -46,67 +30,48 @@ var Storage = (function () {
   ];
 
   /**
-   * Inicializa os serviços padrão se o localStorage estiver vazio.
+   * Inicializa os serviços padrão se o banco estiver vazio.
    */
   function inicializarServicospadrao() {
-    var servicos = carregar(KEY_SERVICOS, null);
-    if (servicos === null || (Array.isArray(servicos) && servicos.length === 0)) {
-      var novoServicos = SERVICOS_PADRAO.map(function (s) {
-        return { id: uid(), nome: s.nome };
-      });
-      salvar(KEY_SERVICOS, novoServicos);
-    }
+    return DB.getServicos().then(function (servicos) {
+      if (servicos.length === 0) {
+        var promises = SERVICOS_PADRAO.map(function (s) {
+          return DB.adicionarServico(s.nome);
+        });
+        return Promise.all(promises);
+      }
+    });
   }
 
   function getServicos() {
-    var s = carregar(KEY_SERVICOS, []);
-    return Array.isArray(s) ? s : [];
+    return DB.getServicos();
   }
 
   function adicionarServico(nome) {
-    var servicos = getServicos();
-    var novo = { id: uid(), nome: nome.trim() };
-    servicos.push(novo);
-    salvar(KEY_SERVICOS, servicos);
-    return novo;
+    return DB.adicionarServico(nome);
   }
 
   function removerServico(id) {
-    var restantes = getServicos().filter(function (s) { return s.id !== id; });
-    salvar(KEY_SERVICOS, restantes);
+    return DB.removerServico(id);
   }
 
   // ——— Agendamentos ———
 
   function getAgendamentos() {
-    var a = carregar(KEY_AGENDAMENTOS, []);
-    return Array.isArray(a) ? a : [];
+    return DB.getAgendamentos();
   }
 
   /**
    * Adiciona um novo agendamento.
    * @param {{ nomeCliente, whatsapp, servicoId, servicoNome, data, hora }} dados
-   * @returns {object} O agendamento criado.
+   * @returns {Promise<object>} O agendamento criado.
    */
   function adicionarAgendamento(dados) {
-    var lista = getAgendamentos();
-    var novo = {
-      id:          uid(),
-      nomeCliente: dados.nomeCliente,
-      whatsapp:    dados.whatsapp,
-      servicoId:   dados.servicoId,
-      servicoNome: dados.servicoNome,
-      data:        dados.data,   // "YYYY-MM-DD"
-      hora:        dados.hora,   // "HH:MM"
-    };
-    lista.push(novo);
-    salvar(KEY_AGENDAMENTOS, lista);
-    return novo;
+    return DB.adicionarAgendamento(dados);
   }
 
   function cancelarAgendamento(id) {
-    var restantes = getAgendamentos().filter(function (a) { return a.id !== id; });
-    salvar(KEY_AGENDAMENTOS, restantes);
+    return DB.cancelarAgendamento(id);
   }
 
   /**
@@ -114,12 +79,10 @@ var Storage = (function () {
    * @param {string} data  "YYYY-MM-DD"
    * @param {string} hora  "HH:MM"
    * @param {string} [ignorarId]  ID a ignorar na verificação (para edição futura)
-   * @returns {boolean}
+   * @returns {Promise<boolean>}
    */
   function horarioOcupado(data, hora, ignorarId) {
-    return getAgendamentos().some(function (a) {
-      return a.data === data && a.hora === hora && a.id !== ignorarId;
-    });
+    return DB.horarioOcupado(data, hora, ignorarId);
   }
 
   return {

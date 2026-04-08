@@ -11,15 +11,19 @@
    ============================================================ */
 
 :root {
-  --bg: #1a1b1e;
-  --card: #25262b;
-  --text: #e9e9ed;
-  --muted: #909296;
-  --accent: #c9a227;
-  --accent-hover: #ddb92e;
-  --border: #373a40;
+  --bg: #ffffff;              /* fundo branco */
+  --card: #f5f7fa;            /* cards mais claros (menos cinza pesado) */
+  --text: #0f172a;            /* quase preto (mais suave) */
+  --muted: #64748b;           /* cinza azulado */
+  
+  --accent: #0b1f3a;          /* azul marinho */
+  --accent-hover: #123a6b;    /* azul marinho mais claro no hover */
+  
+  --border: #d0d7e2;          /* borda leve */
+  
   --danger: #e03131;
   --success: #2f9e44;
+  
   --radius: 10px;
   --font: "Segoe UI", system-ui, sans-serif;
 }
@@ -93,8 +97,8 @@ body {
 }
 
 .aviso-seguranca {
-  background: rgba(201, 162, 39, 0.1);
-  border: 1px solid rgba(201, 162, 39, 0.3);
+  background: rgba(7, 6, 59, 0.918);
+  border: 1px solid rgb(39 88 201 / 14%);
   border-radius: 8px;
   padding: 0.75rem 1rem;
   font-size: 0.8rem;
@@ -141,9 +145,9 @@ body {
   border-radius: 20px;
   font-size: 0.78rem;
   font-weight: 600;
-  background: rgba(201, 162, 39, 0.15);
+  background: rgb(39 88 201 / 14%);
   color: var(--accent);
-  border: 1px solid rgba(201, 162, 39, 0.3);
+  border: 1px solid rgba(5, 17, 46, 0.918);
 }
 
 .btn-logout {
@@ -316,7 +320,7 @@ main {
 }
 
 .cal-dia.selecionado {
-  background: rgba(201, 162, 39, 0.2);
+  background: rgb(39 88 201 / 14%);
   border-color: var(--accent);
 }
 
@@ -327,6 +331,13 @@ main {
   background: var(--accent);
   border-radius: 50%;
   margin-top: 2px;
+}
+
+.cal-dia.fechado {
+  background: rgba(224, 49, 49, 0.1);
+  border-color: var(--danger);
+  color: var(--muted);
+  cursor: not-allowed;
 }
 
 .cal-dia:disabled {
@@ -415,7 +426,7 @@ main {
   border: none;
   border-radius: 8px;
   background: var(--accent);
-  color: #1a1a12;
+  color: #ffffff;
   font: inherit;
   font-weight: 600;
   cursor: pointer;

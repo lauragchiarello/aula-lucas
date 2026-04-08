@@ -134,17 +134,23 @@
 
   // ——— Inicialização ———
 
-  // Inicializa os serviços padrão na primeira carga
-  Storage.inicializarServicospadrao();
-
-  // Verifica se há sessão ativa (ex.: após recarregar a página)
-  var sessaoAtiva = Auth.getSessao();
-  if (sessaoAtiva) {
-    mostrarApp(sessaoAtiva);
-  } else {
-    mostrarTelaLogin();
-    // Foca no campo de usuário automaticamente
-    setTimeout(function () { inputUsuario.focus(); }, 100);
-  }
+  // Inicializa o banco de dados IndexedDB
+  DB.inicializar().then(function () {
+    // Inicializa os serviços padrão na primeira carga
+    return Storage.inicializarServicospadrao();
+  }).then(function () {
+    // Verifica se há sessão ativa (ex.: após recarregar a página)
+    var sessaoAtiva = Auth.getSessao();
+    if (sessaoAtiva) {
+      mostrarApp(sessaoAtiva);
+    } else {
+      mostrarTelaLogin();
+      // Foca no campo de usuário automaticamente
+      setTimeout(function () { inputUsuario.focus(); }, 100);
+    }
+  }).catch(function (erro) {
+    console.error("Erro na inicialização:", erro);
+    alert("Erro ao inicializar o banco de dados. Verifique o console para mais detalhes.");
+  });
 
 })();

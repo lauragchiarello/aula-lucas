@@ -51,43 +51,51 @@ var UIBarbeiro = (function () {
 
   /** Renderiza a lista de serviços e atualiza o select do cliente. */
   function renderizarServicos() {
-    var servicos = Storage.getServicos();
-    listaServicos.innerHTML = "";
+    Storage.getServicos().then(function (servicos) {
+      listaServicos.innerHTML = "";
 
-    if (servicos.length === 0) {
-      var li = document.createElement("li");
-      li.className = "lista-servicos-vazia";
-      li.textContent = "Nenhum serviço cadastrado ainda.";
-      listaServicos.appendChild(li);
-    } else {
-      servicos.forEach(function (s) {
+      if (servicos.length === 0) {
         var li = document.createElement("li");
-
-        var span = document.createElement("span");
-        span.textContent = s.nome;
-        li.appendChild(span);
-
-        var btnExcluir = document.createElement("button");
-        btnExcluir.type = "button";
-        btnExcluir.className = "btn-icone";
-        btnExcluir.textContent = "Excluir";
-        btnExcluir.setAttribute("aria-label", "Excluir serviço " + s.nome);
-        btnExcluir.setAttribute("data-id", s.id);
-        btnExcluir.addEventListener("click", function () {
-          Storage.removerServico(s.id);
-          renderizarServicos();
-          UICliente.atualizarSelectServicos();
-        });
-
-        li.appendChild(btnExcluir);
+        li.className = "lista-servicos-vazia";
+        li.textContent = "Nenhum serviço cadastrado ainda.";
         listaServicos.appendChild(li);
-      });
-    }
+      } else {
+        servicos.forEach(function (s) {
+          var li = document.createElement("li");
 
-    // Atualiza o select do cliente sempre que a lista mudar
-    if (typeof UICliente !== "undefined") {
-      UICliente.atualizarSelectServicos();
-    }
+          var span = document.createElement("span");
+          span.textContent = s.nome;
+          li.appendChild(span);
+
+          var btnExcluir = document.createElement("button");
+          btnExcluir.type = "button";
+          btnExcluir.className = "btn-icone";
+          btnExcluir.textContent = "Excluir";
+          btnExcluir.setAttribute("aria-label", "Excluir serviço " + s.nome);
+          btnExcluir.setAttribute("data-id", s.id);
+          btnExcluir.addEventListener("click", function () {
+            Storage.removerServico(s.id).then(function () {
+              renderizarServicos();
+              if (typeof UICliente !== "undefined") {
+                UICliente.atualizarSelectServicos();
+              }
+            }).catch(function (erro) {
+              console.error("Erro ao remover serviço:", erro);
+            });
+          });
+
+          li.appendChild(btnExcluir);
+          listaServicos.appendChild(li);
+        });
+      }
+
+      // Atualiza o select do cliente sempre que a lista mudar
+      if (typeof UICliente !== "undefined") {
+        UICliente.atualizarSelectServicos();
+      }
+    }).catch(function (erro) {
+      console.error("Erro ao carregar serviços:", erro);
+    });
   }
 
   // Validação e envio do formulário de serviço
@@ -113,54 +121,64 @@ var UIBarbeiro = (function () {
       valido = false;
     } else {
       // Verifica duplicata
-      var jaExiste = Storage.getServicos().some(function (s) {
-        return s.nome.toLowerCase() === nome.toLowerCase();
+      Storage.getServicos().then(function (servicos) {
+        var jaExiste = servicos.some(function (s) {
+          return s.nome.toLowerCase() === nome.toLowerCase();
+        });
+        if (jaExiste) {
+          erroSvNome.textContent = "Já existe um serviço com este nome.";
+          inputSvNome.classList.add("campo-erro");
+          inputSvNome.focus();
+          valido = false;
+        }
+
+        if (!valido) return;
+
+        Storage.adicionarServico(nome).then(function (novoServico) {
+          inputSvNome.value = "";
+          renderizarServicos();
+          mostrarFeedback(feedbackSv, "Serviço \"" + nome + "\" adicionado com sucesso!", "sucesso");
+        }).catch(function (erro) {
+          console.error("Erro ao adicionar serviço:", erro);
+          mostrarFeedback(feedbackSv, "Erro ao adicionar serviço.", "erro");
+        });
+      }).catch(function (erro) {
+        console.error("Erro ao verificar serviços:", erro);
+        mostrarFeedback(feedbackSv, "Erro ao verificar serviços.", "erro");
       });
-      if (jaExiste) {
-        erroSvNome.textContent = "Já existe um serviço com este nome.";
-        inputSvNome.classList.add("campo-erro");
-        inputSvNome.focus();
-        valido = false;
-      }
     }
-
-    if (!valido) return;
-
-    Storage.adicionarServico(nome);
-    inputSvNome.value = "";
-    renderizarServicos();
-    mostrarFeedback(feedbackSv, "Serviço \"" + nome + "\" adicionado com sucesso!", "sucesso");
   });
 
   // ——— Agendamentos ———
 
   /** Renderiza a tabela de agendamentos ordenados por data/hora. */
   function renderizarAgendamentos(filtroDataSelecionada) {
-    var agendamentos = Storage.getAgendamentos().slice().sort(function (a, b) {
-      var da = a.data + "T" + a.hora;
-      var db = b.data + "T" + b.hora;
-      return da < db ? -1 : da > db ? 1 : 0;
-    });
-
-    // Aplica filtro por data se especificado
-    if (filtroDataSelecionada) {
-      agendamentos = agendamentos.filter(function (ag) {
-        return ag.data === filtroDataSelecionada;
+    Storage.getAgendamentos().then(function (todosAgendamentos) {
+      var agendamentos = todosAgendamentos.slice().sort(function (a, b) {
+        var da = a.data + "T" + a.hora;
+        var db = b.data + "T" + b.hora;
+        return da < db ? -1 : da > db ? 1 : 0;
       });
-    }
 
-    tbodyAg.innerHTML = "";
+      // Aplica filtro por data se especificado
+      if (filtroDataSelecionada) {
+        agendamentos = agendamentos.filter(function (ag) {
+          return ag.data === filtroDataSelecionada;
+        });
+      }
 
-    if (agendamentos.length === 0) {
-      var tr = document.createElement("tr");
-      var td = document.createElement("td");
-      td.colSpan = 5;
-      td.className = "tabela-vazia";
-      td.textContent = "Nenhum agendamento registrado.";
-      tr.appendChild(td);
-      tbodyAg.appendChild(tr);
-      return;
-    }
+      tbodyAg.innerHTML = "";
+
+      if (agendamentos.length === 0) {
+        var tr = document.createElement("tr");
+        var td = document.createElement("td");
+        td.colSpan = 5;
+        td.className = "tabela-vazia";
+        td.textContent = filtroDataSelecionada ? "Nenhum agendamento nesta data." : "Nenhum agendamento registrado.";
+        tr.appendChild(td);
+        tbodyAg.appendChild(tr);
+        return;
+      }
 
     agendamentos.forEach(function (ag) {
       var tr = document.createElement("tr");
@@ -183,14 +201,21 @@ var UIBarbeiro = (function () {
       btnCancelar.textContent = "Cancelar";
       btnCancelar.setAttribute("aria-label", "Cancelar agendamento de " + ag.nomeCliente);
       btnCancelar.addEventListener("click", function () {
-        Storage.cancelarAgendamento(ag.id);
-        renderizarAgendamentos();
-        if (typeof Calendario !== "undefined") Calendario.renderizar();
+        Storage.cancelarAgendamento(ag.id).then(function () {
+          renderizarAgendamentos(filtroDataSelecionada);
+          if (typeof Calendario !== "undefined") Calendario.renderizar();
+        }).catch(function (erro) {
+          console.error("Erro ao cancelar agendamento:", erro);
+        });
       });
       tdAcao.appendChild(btnCancelar);
       tr.appendChild(tdAcao);
 
       tbodyAg.appendChild(tr);
+    });
+    }).catch(function (erro) {
+      console.error("Erro ao carregar agendamentos:", erro);
+      tbodyAg.innerHTML = '<tr><td colspan="5" class="tabela-vazia">Erro ao carregar agendamentos.</td></tr>';
     });
   }
 
