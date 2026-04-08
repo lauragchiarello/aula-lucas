@@ -220,6 +220,18 @@
           <!-- Tabela de agendamentos -->
           <div class="card card-largo" role="region" aria-label="Agendamentos recebidos">
             <h2>Agendamentos</h2>
+            <div class="filtro-agendamentos">
+              <label for="filtro-data">
+                Filtrar por data
+                <input
+                  type="date"
+                  id="filtro-data"
+                  name="filtroData"
+                  placeholder="Selecione uma data"
+                />
+                <button type="button" id="btn-limpar-filtro" class="btn-sec">Limpar filtro</button>
+              </label>
+            </div>
             <div class="tabela-wrap">
               <table class="tabela-ag" aria-label="Lista de agendamentos">
                 <thead>

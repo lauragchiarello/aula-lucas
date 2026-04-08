@@ -17,6 +17,8 @@ var UIBarbeiro = (function () {
   var feedbackSv     = document.getElementById("feedback-sv");
   var listaServicos  = document.getElementById("lista-servicos");
   var tbodyAg        = document.getElementById("tbody-agendamentos");
+  var filtroData     = document.getElementById("filtro-data");
+  var btnLimparFiltro = document.getElementById("btn-limpar-filtro");
 
   // ——— Utilitários ———
 
@@ -133,12 +135,19 @@ var UIBarbeiro = (function () {
   // ——— Agendamentos ———
 
   /** Renderiza a tabela de agendamentos ordenados por data/hora. */
-  function renderizarAgendamentos() {
+  function renderizarAgendamentos(filtroDataSelecionada) {
     var agendamentos = Storage.getAgendamentos().slice().sort(function (a, b) {
       var da = a.data + "T" + a.hora;
       var db = b.data + "T" + b.hora;
       return da < db ? -1 : da > db ? 1 : 0;
     });
+
+    // Aplica filtro por data se especificado
+    if (filtroDataSelecionada) {
+      agendamentos = agendamentos.filter(function (ag) {
+        return ag.data === filtroDataSelecionada;
+      });
+    }
 
     tbodyAg.innerHTML = "";
 
@@ -189,6 +198,28 @@ var UIBarbeiro = (function () {
   function renderizar() {
     renderizarServicos();
     renderizarAgendamentos();
+  }
+
+  // ——— Filtro de agendamentos ———
+
+  /** Aplica o filtro de data aos agendamentos. */
+  function aplicarFiltro() {
+    var dataSelecionada = filtroData ? filtroData.value : "";
+    renderizarAgendamentos(dataSelecionada || null);
+  }
+
+  /** Limpa o filtro e mostra todos os agendamentos. */
+  function limparFiltro() {
+    if (filtroData) filtroData.value = "";
+    renderizarAgendamentos();
+  }
+
+  // Event listeners para o filtro
+  if (filtroData) {
+    filtroData.addEventListener("change", aplicarFiltro);
+  }
+  if (btnLimparFiltro) {
+    btnLimparFiltro.addEventListener("click", limparFiltro);
   }
 
   return {

@@ -487,6 +487,53 @@ main {
 }
 
 /* ============================================================
+   FILTRO DE AGENDAMENTOS
+   ============================================================ */
+
+.filtro-agendamentos {
+  margin-bottom: 1rem;
+}
+
+.filtro-agendamentos label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.filtro-agendamentos input[type="date"] {
+  padding: 0.4rem 0.6rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-size: 0.9rem;
+}
+
+.filtro-agendamentos input[type="date"]:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.filtro-agendamentos .btn-sec {
+  padding: 0.4rem 0.8rem;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--muted);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.filtro-agendamentos .btn-sec:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+/* ============================================================
    TABELA DE AGENDAMENTOS
    ============================================================ */
 
