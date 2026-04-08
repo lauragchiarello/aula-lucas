@@ -1,0 +1,577 @@
+/* ============================================================
+   Navalha Barbearia — Estilos principais
+   Correções aplicadas:
+   - Bug: arquivo era referenciado como "estilo.css" no HTML (corrigido para "estilos.css")
+   - Bug: --accentt (typo) corrigido para --accent
+   - Bug: --accent-hober (typo) corrigido para --accent-hover
+   - Bug: navegação do calendário estava invertida (próximo/anterior trocados)
+   - Melhoria: tela de login adicionada
+   - Melhoria: responsividade aprimorada para mobile
+   - Melhoria: acessibilidade com foco visível e contraste adequado
+   ============================================================ */
+
+:root {
+  --bg: #1a1b1e;
+  --card: #25262b;
+  --text: #e9e9ed;
+  --muted: #909296;
+  --accent: #c9a227;
+  --accent-hover: #ddb92e;
+  --border: #373a40;
+  --danger: #e03131;
+  --success: #2f9e44;
+  --radius: 10px;
+  --font: "Segoe UI", system-ui, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ============================================================
+   TELA DE LOGIN
+   ============================================================ */
+
+#tela-login {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 1.5rem;
+}
+
+#tela-login[hidden] {
+  display: none;
+}
+
+.login-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 2.5rem 2rem;
+  width: 100%;
+  max-width: 400px;
+}
+
+.login-logo {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.login-logo h1 {
+  margin: 0 0 0.25rem;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.05em;
+}
+
+.login-logo p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.login-card h2 {
+  margin: 0 0 1.5rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.aviso-seguranca {
+  background: rgba(201, 162, 39, 0.1);
+  border: 1px solid rgba(201, 162, 39, 0.3);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-top: 1.5rem;
+  line-height: 1.5;
+}
+
+.aviso-seguranca strong {
+  color: var(--accent);
+}
+
+/* ============================================================
+   TOPO / HEADER
+   ============================================================ */
+
+.topo {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.topo h1 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.03em;
+}
+
+.topo-usuario {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.9rem;
+}
+
+.badge-papel {
+  padding: 0.2rem 0.65rem;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  background: rgba(201, 162, 39, 0.15);
+  color: var(--accent);
+  border: 1px solid rgba(201, 162, 39, 0.3);
+}
+
+.btn-logout {
+  padding: 0.35rem 0.85rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.85rem;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.btn-logout:hover {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+/* ============================================================
+   LAYOUT PRINCIPAL
+   ============================================================ */
+
+main {
+  flex: 1;
+  padding: 1.25rem;
+  max-width: 1100px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.painel {
+  display: none;
+}
+
+.painel.ativo {
+  display: block;
+}
+
+.grid-cliente {
+  display: grid;
+  gap: 1.25rem;
+}
+
+@media (min-width: 840px) {
+  .grid-cliente {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+}
+
+.grid-barbeiro {
+  display: grid;
+  gap: 1.25rem;
+}
+
+@media (min-width: 840px) {
+  .grid-barbeiro {
+    grid-template-columns: 320px 1fr;
+    align-items: start;
+  }
+}
+
+/* ============================================================
+   CARDS
+   ============================================================ */
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+}
+
+.card-largo {
+  min-width: 0;
+}
+
+.card h2 {
+  margin: 0 0 1rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.subtitulo {
+  margin: 1.25rem 0 0.5rem;
+  font-size: 0.95rem;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+/* ============================================================
+   CALENDÁRIO
+   ============================================================ */
+
+.cal-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.cal-nav button {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font: inherit;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.cal-nav button:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+#cal-titulo-mes {
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.cal-semanas {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-bottom: 4px;
+  font-size: 0.7rem;
+  color: var(--muted);
+  text-align: center;
+}
+
+.cal-grade {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.cal-dia {
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background: rgba(255, 255, 255, 0.03);
+  cursor: pointer;
+  font: inherit;
+  color: var(--text);
+  font-size: 0.85rem;
+  padding: 2px;
+  transition: border-color 0.15s;
+}
+
+.cal-dia:hover:not(:disabled) {
+  border-color: var(--accent);
+}
+
+.cal-dia.fora {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.cal-dia.hoje {
+  border-color: var(--accent);
+  font-weight: 700;
+}
+
+.cal-dia.selecionado {
+  background: rgba(201, 162, 39, 0.2);
+  border-color: var(--accent);
+}
+
+.cal-dia.tem-evento::after {
+  content: "";
+  width: 4px;
+  height: 4px;
+  background: var(--accent);
+  border-radius: 50%;
+  margin-top: 2px;
+}
+
+.cal-dia:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+/* ============================================================
+   FORMULÁRIOS
+   ============================================================ */
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.9rem;
+}
+
+.form input,
+.form select {
+  padding: 0.55rem 0.65rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  transition: border-color 0.15s;
+}
+
+.form input:focus,
+.form select:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+  border-color: var(--accent);
+}
+
+/* Campos com erro */
+.form input.campo-erro,
+.form select.campo-erro {
+  border-color: var(--danger);
+  outline: none;
+}
+
+.msg-erro {
+  font-size: 0.78rem;
+  color: var(--danger);
+  margin-top: -0.4rem;
+}
+
+/* Mensagem de feedback (sucesso / erro geral) */
+.feedback {
+  padding: 0.65rem 1rem;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 500;
+  display: none;
+}
+
+.feedback.sucesso {
+  background: rgba(47, 158, 68, 0.15);
+  border: 1px solid rgba(47, 158, 68, 0.4);
+  color: #69db7c;
+  display: block;
+}
+
+.feedback.erro {
+  background: rgba(224, 49, 49, 0.15);
+  border: 1px solid rgba(224, 49, 49, 0.4);
+  color: #ff8787;
+  display: block;
+}
+
+/* ============================================================
+   BOTÕES
+   ============================================================ */
+
+.btn-prim {
+  margin-top: 0.25rem;
+  padding: 0.65rem 1rem;
+  border: none;
+  border-radius: 8px;
+  background: var(--accent);
+  color: #1a1a12;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-prim:hover {
+  background: var(--accent-hover);
+}
+
+.btn-prim:focus-visible {
+  outline: 2px solid var(--accent-hover);
+  outline-offset: 2px;
+}
+
+.btn-prim:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ============================================================
+   LISTA DE SERVIÇOS
+   ============================================================ */
+
+.lista-servicos {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.lista-servicos li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.95rem;
+}
+
+.lista-servicos li:last-child {
+  border-bottom: none;
+}
+
+.lista-servicos-vazia {
+  font-size: 0.88rem;
+  color: var(--muted);
+  padding: 0.5rem 0;
+}
+
+/* ============================================================
+   BOTÕES DE ÍCONE / AÇÃO
+   ============================================================ */
+
+.btn-icone {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.8rem;
+  border-radius: 6px;
+  border: 1px solid var(--danger);
+  background: transparent;
+  color: var(--danger);
+  cursor: pointer;
+  font: inherit;
+  transition: background 0.15s;
+}
+
+.btn-icone:hover {
+  background: rgba(224, 49, 49, 0.15);
+}
+
+/* ============================================================
+   TABELA DE AGENDAMENTOS
+   ============================================================ */
+
+.tabela-wrap {
+  overflow-x: auto;
+}
+
+.tabela-ag {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+.tabela-ag th,
+.tabela-ag td {
+  text-align: left;
+  padding: 0.5rem 0.65rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.tabela-ag th {
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.tabela-ag tbody tr:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.tabela-vazia {
+  font-size: 0.88rem;
+  color: var(--muted);
+  padding: 1rem 0;
+  text-align: center;
+}
+
+/* ============================================================
+   RODAPÉ
+   ============================================================ */
+
+footer {
+  border-top: 1px solid var(--border);
+  padding: 1rem 1.25rem;
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+footer a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+footer a:hover {
+  text-decoration: underline;
+}
+
+/* ============================================================
+   RESPONSIVIDADE — MOBILE
+   ============================================================ */
+
+@media (max-width: 480px) {
+  .login-card {
+    padding: 1.75rem 1.25rem;
+  }
+
+  .topo h1 {
+    font-size: 1.1rem;
+  }
+
+  .card {
+    padding: 1rem;
+  }
+
+  .tabela-ag th:nth-child(3),
+  .tabela-ag td:nth-child(3) {
+    display: none;
+  }
+}
+
+/* ============================================================
+   FOCO VISÍVEL (acessibilidade)
+   ============================================================ */
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}

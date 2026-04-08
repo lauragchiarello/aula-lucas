@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Navalha Barbearia — Agendamento</title>
+  <!-- Bug corrigido: nome do arquivo era "estilo.css" (sem o 's'), causando falha no carregamento -->
+  <link rel="stylesheet" href="css/estilos.css" />
+</head>
+<body>
+
+  <!-- ============================================================
+       TELA DE LOGIN
+       ============================================================ -->
+  <div id="tela-login" role="main" aria-label="Tela de login">
+    <div class="login-card">
+      <div class="login-logo">
+        <h1>✂ Navalha</h1>
+        <p>Sistema de Agendamento</p>
+      </div>
+
+      <h2>Entrar</h2>
+
+      <form id="form-login" class="form" novalidate>
+        <label for="login-usuario">
+          Usuário
+          <input
+            type="text"
+            id="login-usuario"
+            name="usuario"
+            autocomplete="username"
+            placeholder="cliente ou barbeiro"
+            aria-required="true"
+          />
+          <span class="msg-erro" id="erro-login-usuario" aria-live="polite"></span>
+        </label>
+
+        <label for="login-senha">
+          Senha
+          <input
+            type="password"
+            id="login-senha"
+            name="senha"
+            autocomplete="current-password"
+            placeholder="••••••"
+            aria-required="true"
+          />
+          <span class="msg-erro" id="erro-login-senha" aria-live="polite"></span>
+        </label>
+
+        <div class="feedback" id="feedback-login" role="alert" aria-live="assertive"></div>
+
+        <button type="submit" class="btn-prim">Entrar</button>
+      </form>
+
+      <p class="aviso-seguranca">
+        <strong>Aviso educacional:</strong> Este sistema usa autenticação simulada com credenciais
+        fixas apenas para fins de aprendizado. Em produção real, a autenticação deve ser feita
+        no servidor, nunca com senhas em texto no navegador.
+        <br /><br />
+        Credenciais de teste:<br />
+        <strong>cliente</strong> / senha: <strong>cliente123</strong><br />
+        <strong>barbeiro</strong> / senha: <strong>barbeiro123</strong>
+      </p>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       APLICAÇÃO PRINCIPAL (visível após login)
+       ============================================================ -->
+  <div id="app" hidden>
+
+    <header class="topo" role="banner">
+      <h1>✂ Navalha — Agenda</h1>
+      <div class="topo-usuario">
+        <span class="badge-papel" id="badge-papel" aria-label="Papel do usuário logado"></span>
+        <span id="nome-usuario-logado" aria-label="Nome do usuário"></span>
+        <button type="button" class="btn-logout" id="btn-logout" aria-label="Sair do sistema">
+          Sair
+        </button>
+      </div>
+    </header>
+
+    <main>
+
+      <!-- ——— PAINEL CLIENTE ——— -->
+      <section
+        id="painel-cliente"
+        class="painel"
+        aria-label="Área do cliente"
+        hidden
+      >
+        <div class="grid-cliente">
+
+          <!-- Calendário -->
+          <div class="card" role="region" aria-label="Calendário de agendamentos">
+            <h2>Calendário</h2>
+            <div class="cal-nav">
+              <button type="button" id="cal-mes-ant" aria-label="Mês anterior">◀</button>
+              <span id="cal-titulo-mes" aria-live="polite"></span>
+              <button type="button" id="cal-prox-mes" aria-label="Próximo mês">▶</button>
+            </div>
+            <div class="cal-semanas" role="row" aria-label="Dias da semana">
+              <span aria-label="Domingo">Dom</span>
+              <span aria-label="Segunda">Seg</span>
+              <span aria-label="Terça">Ter</span>
+              <span aria-label="Quarta">Qua</span>
+              <span aria-label="Quinta">Qui</span>
+              <span aria-label="Sexta">Sex</span>
+              <span aria-label="Sábado">Sáb</span>
+            </div>
+            <div id="cal-grade" class="cal-grade" role="grid" aria-label="Dias do mês"></div>
+          </div>
+
+          <!-- Formulário de agendamento -->
+          <div class="card" role="region" aria-label="Formulário de novo agendamento">
+            <h2>Novo agendamento</h2>
+            <div class="feedback" id="feedback-ag" role="alert" aria-live="assertive"></div>
+            <form id="form-agendamento" class="form" novalidate>
+              <label for="ag-nome">
+                Nome completo
+                <input
+                  type="text"
+                  id="ag-nome"
+                  name="nome"
+                  autocomplete="name"
+                  placeholder="Seu nome"
+                  maxlength="80"
+                  aria-required="true"
+                />
+                <span class="msg-erro" id="erro-ag-nome" aria-live="polite"></span>
+              </label>
+
+              <label for="ag-whatsapp">
+                WhatsApp
+                <input
+                  type="tel"
+                  id="ag-whatsapp"
+                  name="whatsapp"
+                  inputmode="numeric"
+                  placeholder="(11) 99999-9999"
+                  maxlength="15"
+                  aria-required="true"
+                />
+                <span class="msg-erro" id="erro-ag-whatsapp" aria-live="polite"></span>
+              </label>
+
+              <label for="ag-servico">
+                Serviço
+                <select id="ag-servico" name="servico" aria-required="true">
+                  <option value="">— Selecione um serviço —</option>
+                </select>
+                <span class="msg-erro" id="erro-ag-servico" aria-live="polite"></span>
+              </label>
+
+              <label for="ag-data">
+                Data
+                <input
+                  type="date"
+                  id="ag-data"
+                  name="data"
+                  aria-required="true"
+                />
+                <span class="msg-erro" id="erro-ag-data" aria-live="polite"></span>
+              </label>
+
+              <label for="ag-hora">
+                Horário
+                <input
+                  type="time"
+                  id="ag-hora"
+                  name="hora"
+                  min="08:00"
+                  max="20:00"
+                  aria-required="true"
+                />
+                <span class="msg-erro" id="erro-ag-hora" aria-live="polite"></span>
+              </label>
+
+              <button type="submit" class="btn-prim">Confirmar agendamento</button>
+            </form>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ——— PAINEL BARBEIRO ——— -->
+      <section
+        id="painel-barbeiro"
+        class="painel"
+        aria-label="Área do barbeiro"
+        hidden
+      >
+        <div class="grid-barbeiro">
+
+          <!-- Cadastro de serviços -->
+          <div class="card" role="region" aria-label="Cadastro de serviços">
+            <h2>Cadastrar serviço</h2>
+            <div class="feedback" id="feedback-sv" role="alert" aria-live="assertive"></div>
+            <form id="form-servico" class="form" novalidate>
+              <label for="sv-nome">
+                Nome do serviço
+                <input
+                  type="text"
+                  id="sv-nome"
+                  name="servico"
+                  placeholder="Ex.: Corte masculino"
+                  maxlength="60"
+                  aria-required="true"
+                />
+                <span class="msg-erro" id="erro-sv-nome" aria-live="polite"></span>
+              </label>
+              <button type="submit" class="btn-prim">Adicionar serviço</button>
+            </form>
+
+            <h3 class="subtitulo">Serviços cadastrados</h3>
+            <ul id="lista-servicos" class="lista-servicos" aria-label="Lista de serviços cadastrados"></ul>
+          </div>
+
+          <!-- Tabela de agendamentos -->
+          <div class="card card-largo" role="region" aria-label="Agendamentos recebidos">
+            <h2>Agendamentos</h2>
+            <div class="tabela-wrap">
+              <table class="tabela-ag" aria-label="Lista de agendamentos">
+                <thead>
+                  <tr>
+                    <th scope="col">Data / Hora</th>
+                    <th scope="col">Cliente</th>
+                    <th scope="col">WhatsApp</th>
+                    <th scope="col">Serviço</th>
+                    <th scope="col"><span class="sr-only">Ações</span></th>
+                  </tr>
+                </thead>
+                <tbody id="tbody-agendamentos"></tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+
+    <footer>
+      <p>
+        Navalha Barbearia &copy; 2025 &mdash; Projeto educacional ETEC &mdash;
+        <a href="#politica" id="link-politica">Política de privacidade</a>
+      </p>
+      <p id="politica" hidden style="margin-top:0.5rem; max-width:600px; margin-inline:auto;">
+        <strong>Política de privacidade fictícia:</strong> Os dados inseridos neste sistema
+        (nome, WhatsApp, horários) são armazenados exclusivamente no navegador do usuário via
+        <em>localStorage</em> e não são transmitidos a nenhum servidor. Em um sistema real,
+        os dados pessoais seriam tratados conforme a Lei Geral de Proteção de Dados (LGPD).
+      </p>
+    </footer>
+
+  </div><!-- /#app -->
+
+  <script src="js/auth.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/calendario.js"></script>
+  <script src="js/ui-barbeiro.js"></script>
+  <script src="js/ui-cliente.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
